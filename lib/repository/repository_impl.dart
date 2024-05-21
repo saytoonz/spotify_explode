@@ -2,9 +2,11 @@ import 'repository.dart';
 import 'package:dio/dio.dart';
 import '../entities/artist.dart';
 import '../utils/constants.dart';
+import '../entities/search_result.dart';
 import 'package:spotify_explode/di.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:spotify_explode/utils/enums.dart';
 import 'package:spotify_explode/entities/user.dart';
 import 'package:spotify_explode/entities/album.dart';
 import 'package:spotify_explode/entities/track.dart';
@@ -456,6 +458,54 @@ class RepositoryImpl implements Repository {
           .data;
 
       return User.fromJson(result);
+    } catch (e) {
+      logger.e(e);
+      throw e.toString();
+    }
+  }
+
+  @override
+  Future<T?> search<T>({
+    required String query,
+    SearchType searchTyp = SearchType.track,
+    int offset = Constants.defaultOffset,
+    int limit = Constants.defaultLimit,
+  }) async {
+    if (limit < Constants.minLimit || limit > Constants.maxLimit) {
+      throw Exception(
+          "Limit must be between ${Constants.minLimit} and ${Constants.maxLimit}");
+    }
+
+    try {
+      final result = (await _dio.get(
+        'https://api.spotify.com/v1/search',
+        queryParameters: {
+          'q': query,
+          'type': searchTyp.name,
+          'offset': offset,
+          'limit': limit,
+          'market': 'us'
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${await _getToken.call()}',
+            'Content-Type': 'application/json',
+          },
+        ),
+      ))
+          .data;
+
+      if (searchTyp == SearchType.track) {
+        return SearchTrackResult.fromJson(result['tracks']) as T;
+      } else if (searchTyp == SearchType.album) {
+        return SearchAlbumResult.fromJson(result['albums']) as T;
+      } else if (searchTyp == SearchType.artist) {
+        return SearchArtistResult.fromJson(result['artists']) as T;
+      } else if (searchTyp == SearchType.playlist) {
+        return SearchPlaylistResult.fromJson(result['playlists']) as T;
+      } else {
+        throw 'Unknow search type';
+      }
     } catch (e) {
       logger.e(e);
       throw e.toString();

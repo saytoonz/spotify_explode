@@ -2,6 +2,7 @@ import '../entities/user.dart';
 import '../entities/track.dart';
 import '../utils/constants.dart';
 import '../entities/playlist.dart';
+import 'package:spotify_explode/utils/enums.dart';
 import 'package:spotify_explode/entities/album.dart';
 import 'package:spotify_explode/entities/artist.dart';
 
@@ -80,4 +81,13 @@ abstract class Repository {
   //! User
   ///Get user detail
   Future<User> getUser({required String userId});
+
+  /// Search for albums, artists, tracks, playlists
+  /// Depending on the SearchType
+  Future<T?> search<T>({
+    required String query,
+    SearchType searchTyp = SearchType.track,
+    int offset = Constants.defaultOffset,
+    int limit = Constants.defaultLimit,
+  });
 }

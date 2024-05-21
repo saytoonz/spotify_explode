@@ -3,9 +3,9 @@ import 'entities/track.dart';
 import 'entities/playlist.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:spotify_explode/entities/album.dart';
-import 'package:spotify_explode/entities/artist.dart';
+import 'package:spotify_explode/utils/enums.dart';
 import 'package:spotify_explode/repository/repository.dart';
+import 'package:spotify_explode/entities/search_result.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
 Future<void> main() async {
@@ -167,10 +167,10 @@ class _HomePageState extends State<HomePage> {
           // logger.w(artist.images.length);
           // logger.f(artist.followers?.total);
 
-          List<Album> artistAlbums =
-              await repository.getAllArtistAlbums(artistId: artistId);
-          logger.d(artistAlbums.first.toJson());
-          logger.w(artistAlbums.length);
+          // List<Album> artistAlbums =
+          //     await repository.getAllArtistAlbums(artistId: artistId);
+          // logger.d(artistAlbums.first.toJson());
+          // logger.w(artistAlbums.length);
 
           // List<Album> paginatedArtistsAlbums =
           //     await repository.getArtistAlbumsPaginated(
@@ -184,6 +184,44 @@ class _HomePageState extends State<HomePage> {
           //! User
           // User user = await repository.getUser(userId: userId);
           // logger.d(user.toJson());
+
+          //! Search
+
+          // SearchTrackResult tracksResult = await repository.search(
+          //   searchTyp: SearchType.track,
+          //   query: 'Before you go',
+          //   limit: 50, //optional
+          //   //   offset: 0, //optional
+          // );
+          //   logger.d(tracksResult.items.length);
+          // logger.d(tracksResult.total);
+
+          // SearchAlbumResult albumResult = await repository.search(
+          //   searchTyp: SearchType.album,
+          //   query: 'The villian I never was',
+          //   limit: 50, //optional
+          //   //   offset: 0, //optional
+          // );
+          // logger.d(albumResult.items.length);
+          // logger.d(albumResult.total);
+
+          // SearchPlaylistResult playlistResult = await repository.search(
+          //   searchTyp: SearchType.playlist,
+          //   query: 'banda neira',
+          //   limit: 50, //optional
+          //   //   offset: 0, //optional
+          // );
+          // logger.d(playlistResult.items.length);
+          // logger.d(playlistResult.total);
+
+          SearchArtistResult artistResult = await repository.search(
+            searchTyp: SearchType.artist,
+            query: 'Black Sherif',
+            limit: 50, //optional
+            //   offset: 0, //optional
+          );
+          logger.d(artistResult.items.length);
+          logger.d(artistResult.total);
         },
       ),
     );

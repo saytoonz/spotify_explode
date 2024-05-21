@@ -1,9 +1,12 @@
 import 'repository.dart';
 import 'package:dio/dio.dart';
+import '../entities/artist.dart';
 import '../utils/constants.dart';
 import 'package:spotify_explode/di.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:spotify_explode/entities/user.dart';
+import 'package:spotify_explode/entities/album.dart';
 import 'package:spotify_explode/entities/track.dart';
 import 'package:spotify_explode/entities/playlist.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -249,5 +252,213 @@ class RepositoryImpl implements Repository {
   ///
   ///
   ///
+  /// Album
   ///
+  @override
+  Future<Album> getAlbum({required String albumId}) async {
+    try {
+      final result = (await _dio.get(
+        'https://api.spotify.com/v1/albums/$albumId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${await _getToken.call()}',
+            'Content-Type': 'application/json',
+          },
+        ),
+      ))
+          .data;
+
+      return Album.fromJson(result);
+    } catch (e) {
+      logger.e(e);
+      throw e.toString();
+    }
+  }
+
+  @override
+  Future<List<Track>> getAllAlbumTracks({required String albumId}) async {
+    try {
+      List<Track> trackList = [];
+      int offset = 0;
+
+      while (true) {
+        List<Track> tracks = await getAlbumTracksPaginated(
+          albumId: albumId,
+          offset: offset,
+          limit: Constants.defaultLimit,
+        );
+
+        trackList.addAll(tracks);
+
+        if (tracks.length < Constants.defaultLimit) {
+          break;
+        }
+
+        offset += tracks.length;
+      }
+
+      return trackList;
+    } catch (e) {
+      logger.e(e);
+      throw e.toString();
+    }
+  }
+
+  @override
+  Future<List<Track>> getAlbumTracksPaginated({
+    required String albumId,
+    int offset = Constants.defaultOffset,
+    int limit = Constants.defaultLimit,
+  }) async {
+    if (limit < Constants.minLimit || limit > Constants.maxLimit) {
+      throw Exception(
+          "Limit must be between ${Constants.minLimit} and ${Constants.maxLimit}");
+    }
+
+    final result = (await _dio.get(
+      'https://api.spotify.com/v1/albums/$albumId/tracks',
+      queryParameters: {
+        'offset': offset,
+        'limit': limit,
+      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer ${await _getToken.call()}',
+          'Content-Type': 'application/json',
+        },
+      ),
+    ))
+        .data;
+
+    return (result['items'] as Iterable)
+        .map((json) => Track.fromJson(json))
+        .toList();
+  }
+
+  ///
+  ///
+  ///
+  ///
+  ///
+  /// Artist
+  ///
+  @override
+  Future<Artist> getArtist({required String artistId}) async {
+    try {
+      final result = (await _dio.get(
+        'https://api.spotify.com/v1/artists/$artistId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${await _getToken.call()}',
+            'Content-Type': 'application/json',
+          },
+        ),
+      ))
+          .data;
+
+      return Artist.fromJson(result);
+    } catch (e) {
+      logger.e(e);
+      throw e.toString();
+    }
+  }
+
+  @override
+  Future<List<Album>> getAllArtistAlbums({
+    required String artistId,
+    String? albumType,
+  }) async {
+    try {
+      List<Album> albumList = [];
+      int offset = 0;
+
+      while (true) {
+        List<Album> albums = await getArtistAlbumsPaginated(
+          artistId: artistId,
+          offset: offset,
+          limit: Constants.defaultLimit,
+          albumType: albumType,
+        );
+
+        logger.d("New additions: ${albums.length}");
+
+        albumList.addAll(albums);
+
+        if (albums.length < Constants.defaultLimit) {
+          break;
+        }
+
+        offset += albums.length;
+      }
+
+      return albumList;
+    } catch (e) {
+      logger.e(e);
+      throw e.toString();
+    }
+  }
+
+  @override
+  Future<List<Album>> getArtistAlbumsPaginated({
+    required String artistId,
+    String? albumType,
+    int offset = Constants.defaultOffset,
+    int limit = Constants.defaultLimit,
+  }) async {
+    if (limit < Constants.minLimit || limit > Constants.maxLimit) {
+      throw Exception(
+          "Limit must be between ${Constants.minLimit} and ${Constants.maxLimit}");
+    }
+
+    final result = (await _dio.get(
+      'https://api.spotify.com/v1/artists/$artistId/albums',
+      queryParameters: {
+        'offset': offset,
+        'limit': limit,
+      }..addAll(albumType != null
+          ? {
+              'album_type': albumType.toUpperCase(),
+            }
+          : {}),
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer ${await _getToken.call()}',
+          'Content-Type': 'application/json',
+        },
+      ),
+    ))
+        .data;
+
+    return (result['items'] as Iterable)
+        .map((json) => Album.fromJson(json))
+        .toList();
+  }
+
+  ///
+  ///
+  ///
+  ///
+  ///
+  /// User
+  ///
+  @override
+  Future<User> getUser({required String userId}) async {
+    try {
+      final result = (await _dio.get(
+        'https://api.spotify.com/v1/users/$userId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${await _getToken.call()}',
+            'Content-Type': 'application/json',
+          },
+        ),
+      ))
+          .data;
+
+      return User.fromJson(result);
+    } catch (e) {
+      logger.e(e);
+      throw e.toString();
+    }
+  }
 }

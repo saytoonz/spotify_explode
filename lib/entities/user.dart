@@ -1,8 +1,9 @@
 import 'spotify_image.dart';
+import 'package:spotify_explode/entities/follower.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:spotify_explode/entities/external_urls.dart';
-// ignore_for_file: invalid_annotation_target
 
+// ignore_for_file: invalid_annotation_target
 
 part 'user.freezed.dart';
 part 'user.g.dart';
@@ -18,6 +19,7 @@ class User with _$User {
     @Default('user') String type,
     @Default('') String uri,
     @Default([]) List<SpotifyImage> images,
+    Follower? followers,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

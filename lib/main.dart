@@ -3,6 +3,8 @@ import 'entities/track.dart';
 import 'entities/playlist.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:spotify_explode/entities/album.dart';
+import 'package:spotify_explode/entities/artist.dart';
 import 'package:spotify_explode/repository/repository.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
@@ -22,7 +24,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: HomePage(),
     );
   }
@@ -45,7 +47,10 @@ class _HomePageState extends State<HomePage> {
 
   String trackId = '6O5A41opiGbG2PphOnzZ6b'; // '37R0bQOQj5a7DOqh1TGzvB';
   String playlistId = '7hFdF3Wrqg74DXAk9z6a0G'; // '37R0bQOQj5a7DOqh1TGzvB';
-  // https://open.spotify.com/track/6O5A41opiGbG2PphOnzZ6b
+  String albumId = '2wiPF3m0ylst0JSk1IvZL8'; // 336m0kejdM5Fkw2HUX46Bw
+  String artistId = '4GNC7GD6oZMSxPGyXy4MNB'; // 0bAsR2unSRpn6BQPEnNlZm
+  String userId = 'xxu0yww90v07gbh9veqta7ze0'; // 336m0kejdM5Fkw2HUX46Bw
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,9 +90,9 @@ class _HomePageState extends State<HomePage> {
                       progress: data.data ?? const Duration(seconds: 0),
                       total: Duration(
                           milliseconds: track?.durationMs ?? (1000 * 6 * 4)),
-                      bufferedBarColor: Color.fromARGB(97, 255, 134, 134),
+                      bufferedBarColor: const Color.fromARGB(97, 255, 134, 134),
                       baseBarColor: const Color.fromARGB(26, 79, 79, 79),
-                      thumbColor: Color.fromARGB(255, 252, 207, 207),
+                      thumbColor: const Color.fromARGB(255, 252, 207, 207),
                       timeLabelTextStyle: const TextStyle(
                           color: Color.fromARGB(255, 255, 187, 187)),
                       progressBarColor: Colors.blue,
@@ -102,7 +107,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          logger.d(trackId);
+          //! Track
           // track = await repository.getTrack(trackId: trackId);
           // setState(() {});
           // logger.d(track?.toJson());
@@ -115,9 +120,10 @@ class _HomePageState extends State<HomePage> {
           // if ((downloadUrl ?? '').isEmpty) return;
           // await player.play(UrlSource('$downloadUrl.mp3', mimeType: '.mp3'));
           // logger.i(downloadUrl);
-          // return;
 
+          //! Playlist
           // playList = await repository.getPlaylist(playlistId: playlistId);
+          // setState(() {});å
           // logger.d(playList?.tracks.items[1].track.toJson());
           // logger.w(playList?.tracks.items.length);
 
@@ -126,16 +132,58 @@ class _HomePageState extends State<HomePage> {
           // logger.d(playlistTracks.first.toJson());
           // logger.w(playlistTracks.length);
 
-          List<Track> paginatedPlaylistTracks =
-              await repository.getPlaylistTracksPaginated(
-            playlistId: playlistId,
-            limit: 1, // optional
-            offset: 1, //optional
-          );
-          logger.d(paginatedPlaylistTracks.first.toJson());
-          logger.w(paginatedPlaylistTracks.length);
+          // List<Track> paginatedPlaylistTracks =
+          //     await repository.getPlaylistTracksPaginated(
+          //   playlistId: playlistId,
+          //   limit: 1, // optional
+          //   offset: 1, //optional
+          // );
+          // logger.d(paginatedPlaylistTracks.first.toJson());
+          // logger.w(paginatedPlaylistTracks.length);
 
-          setState(() {});
+          //! Album
+          // Album album = await repository.getAlbum(albumId: albumId);
+          // logger.d(album.toJson());
+          // logger.w(album.totalTracks);
+          // logger.f(album.tracks.items.length);
+
+          // List<Track> albumTracks =
+          //     await repository.getAllAlbumTracks(albumId: albumId);
+          // logger.d(albumTracks.first.toJson());
+          // logger.w(albumTracks.length);
+
+          // List<Track> paginatedPAlbumTracks =
+          //     await repository.getAlbumTracksPaginated(
+          //   albumId: albumId,
+          //   // limit: 1, // optional
+          //   offset: 0, //optional
+          // );
+          // logger.d(paginatedPAlbumTracks.first.toJson());
+          // logger.w(paginatedPAlbumTracks.length);
+
+          //! Artist
+          // Artist artist = await repository.getArtist(artistId: artistId);
+          // logger.d(artist.toJson());
+          // logger.w(artist.images.length);
+          // logger.f(artist.followers?.total);
+
+          List<Album> artistAlbums =
+              await repository.getAllArtistAlbums(artistId: artistId);
+          logger.d(artistAlbums.first.toJson());
+          logger.w(artistAlbums.length);
+
+          // List<Album> paginatedArtistsAlbums =
+          //     await repository.getArtistAlbumsPaginated(
+          //   artistId: artistId,
+          //   limit: 5, // optional
+          //   offset: 0, //optional
+          // );
+          // logger.d(paginatedArtistsAlbums.first.toJson());
+          // logger.w(paginatedArtistsAlbums.length);
+
+          //! User
+          // User user = await repository.getUser(userId: userId);
+          // logger.d(user.toJson());
         },
       ),
     );

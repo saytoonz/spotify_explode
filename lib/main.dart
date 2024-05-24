@@ -214,14 +214,25 @@ class _HomePageState extends State<HomePage> {
           // logger.d(playlistResult.items.length);
           // logger.d(playlistResult.total);
 
-          SearchArtistResult artistResult = await repository.search(
+          // SearchArtistResult artistResult = await repository.search(
+          //   searchTyp: SearchType.artist,
+          //   query: 'Black Sherif',
+          //   limit: 50, //optional
+          //   //   offset: 0, //optional
+          // );
+          // logger.d(artistResult.items.length);
+          // logger.d(artistResult.total);
+
+          dynamic result = await repository.search(
             searchTyp: SearchType.artist,
             query: 'Black Sherif',
             limit: 50, //optional
             //   offset: 0, //optional
           );
-          logger.d(artistResult.items.length);
-          logger.d(artistResult.total);
+          if (result is SearchArtistResult) {
+            print(
+                (result as SearchArtistResult).items.first.artists.first.name);
+          }
         },
       ),
     );

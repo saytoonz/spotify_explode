@@ -1,5 +1,5 @@
-import 'di.dart';
 import 'spotify/spotify.dart';
+import 'package:logger/logger.dart';
 import 'spotify/entities/track.dart';
 import 'package:flutter/material.dart';
 import 'spotify/entities/playlist.dart';
@@ -8,7 +8,6 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await diSetup();
   await Spotify.ensureInitialized();
   runApp(const MainApp());
 }
@@ -39,6 +38,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Logger logger = Logger();
+
   final player = AudioPlayer();
   Track? track;
   Playlist? playList;

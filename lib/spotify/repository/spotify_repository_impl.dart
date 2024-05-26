@@ -1,4 +1,3 @@
-import '../../di.dart';
 import '../spotify.dart';
 import '../utils/enums.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +14,7 @@ import 'package:html/parser.dart' show parse;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 class SpotifyRepositoryImpl implements SpotifyRepository {
-  late SpotifyTokenGetter _getToken;
+  final SpotifyTokenGetter _getToken;
   final Dio _dio = Dio();
   final CookieJar cookieJar = CookieJar();
 
@@ -38,11 +37,8 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
           .data;
 
       Track track = Track.fromJson(result);
-      logger.d(track.toJson());
-
       return track;
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -64,11 +60,8 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
           .data;
       if (!(result["success"] ?? false)) throw result["message"];
 
-      logger.d(result);
-
       return result["id"];
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -84,7 +77,7 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
     }
 
     if (url == null || url.isEmpty) {
-      url = await _getSpotifymateUrl(trackId);
+      url = await _getSpotifyMateUrl(trackId);
     }
     // logger.d(url);
 
@@ -112,9 +105,9 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
     return result['audio']?['url'];
   }
 
-  Future<String?> _getSpotifymateUrl(String trackId) async {
+  Future<String?> _getSpotifyMateUrl(String trackId) async {
     try {
-      final token = await _getSpotifymateToken();
+      final token = await _getSpotifyMateToken();
       final formData = FormData.fromMap({
         'url': 'https://open.spotify.com/track/$trackId',
         token.keys.first!: token.values.first!
@@ -134,12 +127,11 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
           ?.querySelector('a')
           ?.attributes['href'];
     } catch (e) {
-      logger.d(e);
       return null;
     }
   }
 
-  Future<Map<String?, String?>> _getSpotifymateToken() async {
+  Future<Map<String?, String?>> _getSpotifyMateToken() async {
     try {
       final result = (await _dio.get('https://spotifymate.com/')).data;
       final document = parse(result);
@@ -152,7 +144,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
         hiddenInput?.attributes['name']: hiddenInput?.attributes['value']
       };
     } catch (e) {
-      logger.d(e);
       return {};
     }
   }
@@ -178,7 +169,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
 
       return Playlist.fromJson(result);
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -270,7 +260,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
 
       return Album.fromJson(result);
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -299,7 +288,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
 
       return trackList;
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -358,7 +346,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
 
       return Artist.fromJson(result);
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -380,8 +367,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
           albumType: albumType,
         );
 
-        logger.d("New additions: ${albums.length}");
-
         albumList.addAll(albums);
 
         if (albums.length < Constants.defaultLimit) {
@@ -393,7 +378,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
 
       return albumList;
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -457,7 +441,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
 
       return User.fromJson(result);
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }
@@ -505,7 +488,6 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
         throw 'Unknow search type';
       }
     } catch (e) {
-      logger.e(e);
       throw e.toString();
     }
   }

@@ -1,16 +1,15 @@
 import 'di.dart';
-import 'entities/track.dart';
-import 'entities/playlist.dart';
+import 'spotify/spotify.dart';
+import 'spotify/entities/track.dart';
 import 'package:flutter/material.dart';
+import 'spotify/entities/playlist.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:spotify_explode/utils/enums.dart';
-import 'package:spotify_explode/repository/repository.dart';
-import 'package:spotify_explode/entities/search_result.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await diSetup();
+  await Spotify.ensureInitialized();
   runApp(const MainApp());
 }
 
@@ -40,7 +39,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Repository get repository => getIt<Repository>();
   final player = AudioPlayer();
   Track? track;
   Playlist? playList;
@@ -108,18 +106,18 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           //! Track
-          // track = await repository.getTrack(trackId: trackId);
-          // setState(() {});
-          // logger.d(track?.toJson());
-          // String? ytUid = await repository.getYoutubeId(trackId: trackId);
-          // logger.i(ytUid);
-          // if (track == null) return;
+          track = await spotify.getTrack(trackId: trackId);
+          setState(() {});
+          logger.d(track?.toJson());
+          String? ytUid = await spotify.getYoutubeId(trackId: trackId);
+          logger.i(ytUid);
+          if (track == null) return;
 
-          // String? downloadUrl =
-          //     await repository.getDownloadUrl(trackId: track!.id);
-          // if ((downloadUrl ?? '').isEmpty) return;
-          // await player.play(UrlSource('$downloadUrl.mp3', mimeType: '.mp3'));
-          // logger.i(downloadUrl);
+          String? downloadUrl =
+              await spotify.getDownloadUrl(trackId: track!.id);
+          if ((downloadUrl ?? '').isEmpty) return;
+          await player.play(UrlSource('$downloadUrl'));
+          logger.i(downloadUrl);
 
           //! Playlist
           // playList = await repository.getPlaylist(playlistId: playlistId);
@@ -223,16 +221,25 @@ class _HomePageState extends State<HomePage> {
           // logger.d(artistResult.items.length);
           // logger.d(artistResult.total);
 
-          dynamic result = await repository.search(
-            searchTyp: SearchType.artist,
-            query: 'Black Sherif',
-            limit: 50, //optional
-            //   offset: 0, //optional
-          );
-          if (result is SearchArtistResult) {
-            print(
-                (result as SearchArtistResult).items.first.artists.first.name);
-          }
+          // dynamic result = await repository.search(
+          //   searchTyp: SearchType.track,
+          //   query: 'Black Sherif',
+          //   limit: 50, //optional
+          //   //   offset: 0, //optional
+          // );
+          // if (result is SearchArtistResult) {
+          //   logger.d(result.items.first.name);
+          // } else if (result is SearchAlbumResult) {
+          //   logger.d(result.items.first.name);
+          // } else if (result is SearchPlaylistResult) {
+          //   logger.d(result.items.first.name);
+          //   logger.d(result.items.first.externalUrls);
+          //   logger.d(result.items.first.description);
+          //   logger.d(result.items.first.tracks.total);
+          // } else if (result is SearchTrackResult) {
+          //   logger.d(result.items.first.title);
+          //   logger.d(result.items.first.artists);
+          // }
         },
       ),
     );

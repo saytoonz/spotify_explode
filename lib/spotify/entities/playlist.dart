@@ -1,9 +1,9 @@
 import 'user.dart';
 import 'track.dart';
+import 'follower.dart';
 import 'spotify_image.dart';
-import 'package:spotify_explode/entities/follower.dart';
+import 'external_urls.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:spotify_explode/entities/external_urls.dart';
 // ignore_for_file: invalid_annotation_target
 
 part 'playlist.freezed.dart';

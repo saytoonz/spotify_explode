@@ -1,12 +1,12 @@
+import '../utils/enums.dart';
 import '../entities/user.dart';
 import '../entities/track.dart';
+import '../entities/album.dart';
 import '../utils/constants.dart';
+import '../entities/artist.dart';
 import '../entities/playlist.dart';
-import 'package:spotify_explode/utils/enums.dart';
-import 'package:spotify_explode/entities/album.dart';
-import 'package:spotify_explode/entities/artist.dart';
 
-abstract class Repository {
+abstract class SpotifyRepository {
   //! Tracks
   ///Get a single track detail
   Future<Track> getTrack({required String trackId});

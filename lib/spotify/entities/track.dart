@@ -1,6 +1,6 @@
-import './album.dart';
-import './artist.dart';
-import './external_urls.dart';
+import 'album.dart';
+import 'artist.dart';
+import 'external_urls.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 // ignore_for_file: invalid_annotation_target
 

@@ -11,8 +11,8 @@
         "**/.factorypath": true,
         "**/.project": true,
         "**/.settings": true,
-        "**/*.freezed.dart": true,
-        "**/*.g.dart": true
+        "**/*.freezed.dart": false,
+        "**/*.g.dart": false
     },
     "explorerExclude.backup": {}
 }

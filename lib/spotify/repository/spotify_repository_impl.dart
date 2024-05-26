@@ -1,28 +1,26 @@
-import 'repository.dart';
+import '../../di.dart';
+import '../spotify.dart';
+import '../utils/enums.dart';
 import 'package:dio/dio.dart';
+import '../entities/user.dart';
+import '../entities/album.dart';
+import '../entities/track.dart';
+import 'spotify_repository.dart';
 import '../entities/artist.dart';
 import '../utils/constants.dart';
+import '../entities/playlist.dart';
 import '../entities/search_result.dart';
-import 'package:spotify_explode/di.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:spotify_explode/utils/enums.dart';
-import 'package:spotify_explode/entities/user.dart';
-import 'package:spotify_explode/entities/album.dart';
-import 'package:spotify_explode/entities/track.dart';
-import 'package:spotify_explode/entities/playlist.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-class RepositoryImpl implements Repository {
-  late AuthTokenGetter _getToken;
+class SpotifyRepositoryImpl implements SpotifyRepository {
+  late SpotifyTokenGetter _getToken;
   final Dio _dio = Dio();
   final CookieJar cookieJar = CookieJar();
 
-  RepositoryImpl({
-    required AuthTokenGetter token,
-  }) {
+  SpotifyRepositoryImpl(this._getToken) {
     _dio.interceptors.add(CookieManager(cookieJar));
-    _getToken = token;
   }
 
   @override

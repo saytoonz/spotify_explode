@@ -1,8 +1,8 @@
+import 'track.dart';
+import 'artist.dart';
 import 'spotify_image.dart';
-import 'package:spotify_explode/entities/track.dart';
-import 'package:spotify_explode/entities/artist.dart';
+import 'external_urls.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:spotify_explode/entities/external_urls.dart';
 
 // ignore_for_file: invalid_annotation_target
 
